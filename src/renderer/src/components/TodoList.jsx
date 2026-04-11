@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 function TodoItem({ todo, onToggle, onRemove }) {
   return (
     <li
-      className={`flex items-center justify-between gap-2.5 min-h-[50px] py-1.25 px-4 rounded-2xl border transition-colors duration-200 ${todo.completed ? 'bg-[rgba(245,246,254,0.83)] border-[rgba(229,231,244,0.92)]' : 'bg-[rgba(245,246,254,0.83)] border-[rgba(229,231,244,0.92)] hover:bg-[rgba(249,250,255,0.95)]'}`}
+      className={`flex items-center justify-between gap-2.5 min-h-[50px] py-1.25 px-4 rounded-md border transition-colors duration-200 ${todo.completed ? 'bg-[rgba(245,246,254,0.83)] border-[rgba(229,231,244,0.92)]' : 'bg-[rgba(245,246,254,0.83)] border-[rgba(229,231,244,0.92)] hover:bg-[rgba(249,250,255,0.95)]'}`}
       onContextMenu={(e) => {
         e.preventDefault()
         onRemove(todo.id)
