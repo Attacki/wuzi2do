@@ -2,6 +2,8 @@
 
 A desktop todo app built with **Electron** and **React**, using **electron-vite**. The UI uses a frameless window with a frosted-glass look; when the window snaps to a screen edge it can collapse into a slim strip and expand again with smooth transitions. Todo data is persisted in the renderer via **localStorage**.
 
+I warmly welcome any suggestions for improving this project. Its sole purpose is to serve as a simple, user-friendly to-do application—focusing purely on doing just this one thing well.
+
 | Item             | Details                                              |
 |------------------|------------------------------------------------------|
 | npm package name | `slide2do`                                           |
