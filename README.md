@@ -2,11 +2,11 @@
 
 A desktop todo app built with **Electron** and **React**, using **electron-vite**. The UI uses a frameless window with a frosted-glass look; when the window snaps to a screen edge it can collapse into a slim strip and expand again with smooth transitions. Todo data is persisted in the renderer via **localStorage**.
 
-| Item | Details |
-|------|---------|
-| npm package name | `attacki-todos` |
-| Runtime | Electron (main process: window, tray, edge-snapping) |
-| Frontend | React 19, Tailwind CSS 4, Vite |
+| Item             | Details                                              |
+|------------------|------------------------------------------------------|
+| npm package name | `slide2do`                                           |
+| Runtime          | Electron (main process: window, tray, edge-snapping) |
+| Frontend         | React 19, Tailwind CSS 4, Vite                       |
 
 ## Features
 
@@ -40,12 +40,12 @@ npm run build
 
 After `npm run build`, use **electron-builder** to produce per-platform packages or unpacked directories:
 
-| Command | Purpose |
-|---------|---------|
-| `npm run build:unpack` | Unpacked output for debugging |
-| `npm run build:win` | Windows |
-| `npm run build:mac` | macOS |
-| `npm run build:linux` | Linux (e.g. AppImage, deb — see `electron-builder.yml`) |
+| Command                | Purpose                                                 |
+|------------------------|---------------------------------------------------------|
+| `npm run build:unpack` | Unpacked output for debugging                           |
+| `npm run build:win`    | Windows                                                 |
+| `npm run build:mac`    | macOS                                                   |
+| `npm run build:linux`  | Linux (e.g. AppImage, deb — see `electron-builder.yml`) |
 
 Installer names, app ID, and related metadata are defined in **`electron-builder.yml`** at the repo root (`productName` and similar may differ from the repository display name; adjust before release).
 

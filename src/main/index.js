@@ -345,7 +345,7 @@ function createTray() {
     }
   ])
 
-  tray.setToolTip('Attacki Todos')
+  tray.setToolTip('Slide2do')
   tray.setContextMenu(contextMenu)
 }
 

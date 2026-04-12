@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: atta
+productName: slide2do
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
   - "!temp/*"
 compression: "maximum"
 win:
-  executableName: atta
+  executableName: slide2do
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
