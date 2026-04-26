@@ -3,15 +3,15 @@ import PropTypes from 'prop-types'
 function TodoItem({ todo, onToggle, onRemove }) {
   return (
     <li
-      className={`flex items-center justify-between gap-2.5 min-h-[50px] py-1.25 px-4 rounded-md border transition-colors duration-200 ${todo.completed ? 'bg-[rgba(245,246,254,0.83)] border-[rgba(229,231,244,0.92)]' : 'bg-[rgba(245,246,254,0.83)] border-[rgba(229,231,244,0.92)] hover:bg-[rgba(249,250,255,0.95)]'}`}
+      className={`flex items-center justify-between gap-2.5 min-h-12.5 py-1.25 px-4 rounded-md border border-[rgba(194,194,194,0.92)] transition-colors duration-200 ${todo.completed ? 'bg-[rgba(241,241,241,0.83)]' : 'bg-[rgba(255,255,255,0.83)] hover:bg-[rgba(249,250,255,0.95)]'}`}
       onContextMenu={(e) => {
         e.preventDefault()
         onRemove(todo.id)
       }}
-      title="右键删除"
+      title="right click and delete this item"
     >
       <span
-        className={`cursor-pointer flex-grow max-w-[calc(100%-40px)] text-[#6a6582] text-base font-bold leading-tight break-words ${todo.completed ? 'line-through text-[#9e9ab4]' : ''}`}
+        className={`cursor-pointer grow max-w-[calc(100%-40px)] text-[#2d2d2d] text-base font-bold leading-tight wrap-break-word ${todo.completed ? 'line-through text-[#b0b0b0]' : ''}`}
         onClick={() => onToggle(todo.id)}
       >
         {todo.text}
@@ -44,7 +44,7 @@ export function TodoList({ todos, onToggle, onRemove }) {
         <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onRemove={onRemove} />
       ))}
       {todos.length === 0 && (
-        <li className="mt-2.5 text-center text-[#ffffff] text-2xl">no tasks, add one now</li>
+        <li className="mt-2.5 text-center text-[#717171] text-xl">未有所向，何以为安</li>
       )}
     </ul>
   )

@@ -26,19 +26,16 @@ function App() {
 
   return (
     <div className={getAppClassName()}>
-      <div className="w-full h-full p-5 rounded-3xl bg-[rgba(209,211,229,0.9)] backdrop-blur-[7px] border border-white/34 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] app-overlay overflow-hidden">
+      <div className="w-full h-full p-5 rounded-3xl bg-[#ffffff] backdrop-blur-[2px] border border-[#737373] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] app-overlay overflow-hidden">
         <div className="flex absolute top-0 left-0 w-full h-7 [-webkit-app-region:drag]" />
         <div className="relative flex flex-col gap-3.5 w-full h-full">
-          <section className="rounded-2xl  border border-white/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_30px_rgba(73,62,121,0.12)] backdrop-blur-[10px] p-4 [-webkit-app-region:no-drag]">
+          <section className="rounded-2xl  border border-[#939393] shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_30px_rgba(73,62,121,0.12)] backdrop-blur-[4px] p-4 [-webkit-app-region:no-drag]">
             <AddTodoForm onAdd={addTodo} />
           </section>
-          <section className="rounded-2xl  border border-white/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_30px_rgba(73,62,121,0.12)] backdrop-blur-[10px] flex flex-col overflow-hidden [-webkit-app-region:no-drag] h-[calc(100%-100px)]">
+          <section className="rounded-2xl  border border-[#939393] shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_30px_rgba(73,62,121,0.12)] backdrop-blur-[4px] flex flex-col overflow-hidden [-webkit-app-region:no-drag] h-[calc(100%-100px)]">
             <header className="flex items-center justify-center gap-2 py-2.5 w-[calc(100%-30px)] mx-auto mb-2.5 border-b border-[rgba(150,142,182,0.24)]">
-              <span className="text-[30px] font-extrabold tracking-[0.3px] text-[#43ab27]">
-                Todo List
-              </span>
-              <span className="text-2xl text-[#777194]" aria-hidden="true">
-                &#128196;
+              <span className="text-[25px] font-bold tracking-[0.3px] text-[#1c1c1c]">
+                吾之所向
               </span>
             </header>
             <TodoList todos={todos} onToggle={toggleTodo} onRemove={removeTodo} />
