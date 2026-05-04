@@ -5,7 +5,9 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   minimize: () => ipcRenderer.send('minimize-app'),
   close: () => ipcRenderer.send('close-app'),
-  onWindowSnap: (callback) => ipcRenderer.on('window-snap', (_event, value) => callback(value))
+  onWindowSnap: (callback) => ipcRenderer.on('window-snap', (_event, value) => callback(value)),
+  onThemeChanged: (callback) => ipcRenderer.on('theme-changed', (_event, value) => callback(value)),
+  onLocaleChanged: (callback) => ipcRenderer.on('locale-changed', (_event, value) => callback(value))
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

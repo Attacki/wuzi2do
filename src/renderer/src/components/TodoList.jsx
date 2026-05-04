@@ -1,19 +1,27 @@
 import PropTypes from 'prop-types'
+import { useI18n } from '../contexts/I18nContext'
 
 function TodoItem({ todo, onToggle, onRemove }) {
+  const { t } = useI18n()
+  const rowBase =
+    'flex items-center justify-between gap-2.5 min-h-12.5 py-1.25 px-4 rounded-md border border-app-todo-border transition-colors duration-200'
+  const rowState = todo.completed
+    ? 'bg-app-todo-bg-done'
+    : 'bg-app-todo-bg hover:bg-app-todo-bg-hover'
+  const textBase =
+    'cursor-pointer grow max-w-[calc(100%-40px)] text-app-todo-text text-base font-bold leading-tight wrap-break-word'
+  const textDone = todo.completed ? 'line-through text-app-todo-text-done' : ''
+
   return (
     <li
-      className={`flex items-center justify-between gap-2.5 min-h-12.5 py-1.25 px-4 rounded-md border border-[rgba(194,194,194,0.92)] transition-colors duration-200 ${todo.completed ? 'bg-[rgba(241,241,241,0.83)]' : 'bg-[rgba(255,255,255,0.83)] hover:bg-[rgba(249,250,255,0.95)]'}`}
+      className={`${rowBase} ${rowState}`}
       onContextMenu={(e) => {
         e.preventDefault()
         onRemove(todo.id)
       }}
-      title="right click and delete this item"
+      title={t('todoContextTitle')}
     >
-      <span
-        className={`cursor-pointer grow max-w-[calc(100%-40px)] text-[#2d2d2d] text-base font-bold leading-tight wrap-break-word ${todo.completed ? 'line-through text-[#b0b0b0]' : ''}`}
-        onClick={() => onToggle(todo.id)}
-      >
+      <span className={`${textBase} ${textDone}`} onClick={() => onToggle(todo.id)}>
         {todo.text}
       </span>
       <input
@@ -21,7 +29,7 @@ function TodoItem({ todo, onToggle, onRemove }) {
         className="todo-check"
         checked={todo.completed}
         onChange={() => onToggle(todo.id)}
-        aria-label={`切换 ${todo.text}`}
+        aria-label={t('todoAriaToggle', { text: todo.text })}
       />
     </li>
   )
@@ -38,13 +46,15 @@ TodoItem.propTypes = {
 }
 
 export function TodoList({ todos, onToggle, onRemove }) {
+  const { t } = useI18n()
+
   return (
-    <ul className="list-none p-0 overflow-y-auto p-3 flex flex-col gap-3.5 todo-list">
+    <ul className="list-none overflow-y-auto p-3 flex flex-col gap-3.5 todo-list">
       {todos.map((todo) => (
         <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onRemove={onRemove} />
       ))}
       {todos.length === 0 && (
-        <li className="mt-2.5 text-center text-[#717171] text-xl">未有所向，何以为安</li>
+        <li className="mt-2.5 text-center text-app-empty text-xl">{t('emptyTodos')}</li>
       )}
     </ul>
   )

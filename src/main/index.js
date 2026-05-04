@@ -1,283 +1,44 @@
-import { app, shell, BrowserWindow, Menu, ipcMain, Tray, screen } from 'electron'
+/**
+ * Slide2do 主进程入口
+ * 
+ * 职责：
+ * 1. 应用初始化和生命周期管理
+ * 2. 协调各个管理器模块
+ * 3. 注册 IPC 通信处理器
+ */
+
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-// ========== 常量配置 ==========
-const WINDOW_CONFIG = {
-  initWidth: 450,
-  initHeight: 650
-}
+// 配置和存储
+import { WINDOW_CONFIG } from './config/constants.js'
+import { getStoredLocale, getStoredTheme, setStoredLocale, setStoredTheme } from './config/store.js'
 
-const SNAP_CONFIG = {
-  threshold: 5,
-  animationDelay: 500,
-  pollInterval: 100
-}
-
-/** Windows 无边框窗口无法用 setBounds/setMinimumSize 突破系统隐式最小尺寸，需用 setShape 裁剪命中区（见 electron#32302）。 */
-function clearRolledShape(win) {
-  if (process.platform !== 'win32' || !win || win.isDestroyed()) return
-  win.setShape([])
-}
-
-function applyRolledShape(win, direction, threshold) {
-  if (process.platform !== 'win32' || win.isDestroyed()) return
-  const { width: w, height: h } = win.getBounds()
-  const t = Math.max(1, Math.round(threshold))
-  let rects
-  switch (direction) {
-    case 'top':
-      rects = [{ x: 0, y: 0, width: w, height: Math.min(t, h) }]
-      break
-    case 'bottom':
-      rects = [{ x: 0, y: Math.max(0, h - t), width: w, height: Math.min(t, h) }]
-      break
-    case 'left':
-      rects = [{ x: 0, y: 0, width: Math.min(t, w), height: h }]
-      break
-    case 'right':
-      rects = [{ x: Math.max(0, w - t), y: 0, width: Math.min(t, w), height: h }]
-      break
-    default:
-      rects = []
-  }
-  win.setShape(rects.length ? rects : [])
-}
-
-/** 卷起条在屏幕上的命中矩形（Win 上 getBounds 可能仍为大窗口，与 setShape 一致） */
-function rolledHitScreenRect(direction, bounds, threshold) {
-  const { x, y, width: w, height: h } = bounds
-  const t = Math.max(1, threshold)
-  switch (direction) {
-    case 'top':
-      return { x, y, width: w, height: Math.min(t, h) }
-    case 'bottom':
-      return { x, y: y + h - t, width: w, height: Math.min(t, h) }
-    case 'left':
-      return { x, y, width: Math.min(t, w), height: h }
-    case 'right':
-      return { x: x + w - t, y, width: Math.min(t, w), height: h }
-    default:
-      return bounds
-  }
-}
-
-function pointInRect(px, py, rect) {
-  return px >= rect.x && px <= rect.x + rect.width && py >= rect.y && py <= rect.y + rect.height
-}
+// 管理器
+import { createSnapManager } from './managers/snapManager.js'
+import { createTrayManager } from './managers/trayManager.js'
 
 // ========== 全局状态 ==========
 let mainWindow = null
-let tray = null
-
-// ========== 窗口吸附管理器 ==========
-const snapManager = {
-  state: { direction: null, isSnapped: false },
-  mousePollInterval: null,
-
-  // 清理吸附状态
-  cleanup() {
-    if (!this.state.isSnapped) return
-
-    clearRolledShape(mainWindow)
-
-    const oldDirection = this.state.direction
-    this.state = { direction: null, isSnapped: false }
-
-    if (this.mousePollInterval) {
-      clearInterval(this.mousePollInterval)
-      this.mousePollInterval = null
-    }
-
-    // 确保窗口恢复到正常大小
-    const bounds = mainWindow.getBounds()
-    if (bounds.height < WINDOW_CONFIG.initHeight || bounds.width < WINDOW_CONFIG.initWidth) {
-      mainWindow.setBounds({
-        ...bounds,
-        width: WINDOW_CONFIG.initWidth,
-        height: WINDOW_CONFIG.initHeight
-      })
-      mainWindow.webContents.send('window-snap', {
-        snapped: false,
-        direction: oldDirection
-      })
-    }
-  },
-
-  // 根据方向计算卷起后的窗口边界
-  calculateRolledBounds(direction, currentBounds) {
-    const { threshold } = SNAP_CONFIG
-    const newBounds = { ...currentBounds }
-
-    switch (direction) {
-      case 'top':
-        newBounds.height = threshold
-        break
-      case 'bottom':
-        newBounds.y = currentBounds.y + currentBounds.height - threshold
-        newBounds.height = threshold
-        break
-      case 'left':
-        newBounds.width = threshold
-        break
-      case 'right':
-        newBounds.x = currentBounds.x + currentBounds.width - threshold
-        newBounds.width = threshold
-        break
-    }
-
-    return newBounds
-  },
-
-  // 根据方向计算展开后的窗口边界
-  calculateExpandedBounds(direction, currentBounds, workArea) {
-    const { initWidth, initHeight } = WINDOW_CONFIG
-    const restoreBounds = { width: initWidth, height: initHeight }
-
-    switch (direction) {
-      case 'top':
-        restoreBounds.x = currentBounds.x
-        restoreBounds.y = workArea.y
-        break
-      case 'bottom':
-        restoreBounds.x = currentBounds.x
-        restoreBounds.y = workArea.y + workArea.height - initHeight
-        break
-      case 'left':
-        restoreBounds.x = workArea.x
-        restoreBounds.y = currentBounds.y
-        break
-      case 'right':
-        restoreBounds.x = workArea.x + workArea.width - initWidth
-        restoreBounds.y = currentBounds.y
-        break
-    }
-
-    return restoreBounds
-  },
-
-  // 设置新的吸附
-  setup(direction) {
-    this.state = { direction, isSnapped: true }
-
-    // 初始卷起动画
-    mainWindow.webContents.send('window-snap', { snapped: true, direction })
-    setTimeout(() => {
-      if (this.state.isSnapped) {
-        const bounds = mainWindow.getBounds()
-        const newBounds = this.calculateRolledBounds(direction, bounds)
-        mainWindow.setMinimumSize(1, 1)
-        mainWindow.setBounds(newBounds)
-        applyRolledShape(mainWindow, direction, SNAP_CONFIG.threshold)
-      }
-    }, SNAP_CONFIG.animationDelay)
-
-    // 鼠标悬停检测逻辑
-    this.startMousePolling(direction)
-  },
-
-  // 开始鼠标轮询
-  startMousePolling(direction) {
-    let isAnimating = false
-
-    this.mousePollInterval = setInterval(() => {
-      if (!this.state.isSnapped || isAnimating) return
-
-      const cursor = screen.getCursorScreenPoint()
-      const bounds = mainWindow.getBounds()
-      const { initWidth, initHeight } = WINDOW_CONFIG
-      const isRolledUp = bounds.height < initHeight || bounds.width < initWidth
-
-      const hitRect =
-        process.platform === 'win32' && isRolledUp
-          ? rolledHitScreenRect(direction, bounds, SNAP_CONFIG.threshold)
-          : bounds
-      const isInside = pointInRect(cursor.x, cursor.y, hitRect)
-
-      // 鼠标进入卷起的窗口 -> 展开
-      if (isInside && isRolledUp) {
-        isAnimating = true
-        const display = screen.getDisplayMatching(bounds)
-        const restoreBounds = this.calculateExpandedBounds(direction, bounds, display.workArea)
-        clearRolledShape(mainWindow)
-        mainWindow.setBounds(restoreBounds)
-        mainWindow.webContents.send('window-snap', { snapped: false, direction })
-        setTimeout(() => (isAnimating = false), SNAP_CONFIG.animationDelay)
-      }
-      // 鼠标离开展开的窗口 -> 卷起
-      else if (!isInside && !isRolledUp) {
-        isAnimating = true
-        mainWindow.webContents.send('window-snap', { snapped: true, direction })
-        setTimeout(() => {
-          if (this.state.isSnapped) {
-            const currentBounds = mainWindow.getBounds()
-            const newBounds = this.calculateRolledBounds(direction, currentBounds)
-            mainWindow.setMinimumSize(1, 1)
-            mainWindow.setBounds(newBounds)
-            applyRolledShape(mainWindow, direction, SNAP_CONFIG.threshold)
-          }
-          isAnimating = false
-        }, SNAP_CONFIG.animationDelay)
-      }
-    }, SNAP_CONFIG.pollInterval)
-  },
-
-  // 处理窗口移动事件
-  handleWindowMove() {
-    const bounds = mainWindow.getBounds()
-    const display = screen.getDisplayMatching(bounds)
-    const workArea = display.workArea
-    const { threshold } = SNAP_CONFIG
-    const { initWidth, initHeight } = WINDOW_CONFIG
-
-    let newSnappedDirection = null
-    let { x, y, width, height } = bounds
-    let newX = x
-    let newY = y
-
-    // 边缘检测（后面的条件会覆盖前面的，用于处理角落情况）
-    if (x + width > workArea.x + workArea.width - threshold) {
-      newSnappedDirection = 'right'
-      newX = workArea.x + workArea.width - width
-    }
-    if (x < workArea.x + threshold) {
-      newSnappedDirection = 'left'
-      newX = workArea.x
-    }
-    if (y + height > workArea.y + workArea.height - threshold) {
-      newSnappedDirection = 'bottom'
-      newY = workArea.y + workArea.height - height
-    }
-    if (y < workArea.y + threshold) {
-      newSnappedDirection = 'top'
-      newY = workArea.y
-    }
-
-    // 应用吸附移动
-    if (newX !== x || newY !== y) {
-      clearRolledShape(mainWindow)
-      mainWindow.setBounds({ x: newX, y: newY, width: initWidth, height: initHeight })
-    }
-
-    // 状态转换逻辑
-    if (newSnappedDirection !== this.state.direction) {
-      this.cleanup()
-      if (newSnappedDirection) {
-        this.setup(newSnappedDirection)
-      }
-    }
-  }
-}
+let snapManager = null
+let trayManager = null
+let currentLocale = getStoredLocale()
+let currentTheme = getStoredTheme()
 
 // ========== 窗口创建 ==========
+
+/**
+ * 创建主窗口
+ */
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: WINDOW_CONFIG.initWidth,
     height: WINDOW_CONFIG.initHeight,
-    // Windows 无边框窗口有隐式最小尺寸；不设则 setBounds 无法小于约 50px。
-    minWidth: 1,
-    minHeight: 1,
+    // Windows 无边框窗口有隐式最小尺寸；设为 1 以便 setBounds 可以小于默认限制
+    minWidth: WINDOW_CONFIG.minWidth,
+    minHeight: WINDOW_CONFIG.minHeight,
     show: false,
     resizable: false,
     skipTaskbar: true,
@@ -286,17 +47,18 @@ function createWindow() {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false
     }
   })
 
+  // 窗口准备好后显示
   mainWindow.on('ready-to-show', () => {
     mainWindow.setMinimumSize(1, 1)
     mainWindow.show()
   })
 
-  // 设置窗口吸附
+  // 监听窗口移动，用于边缘吸附
   mainWindow.on('moved', () => snapManager.handleWindowMove())
 
   // 失去焦点时保持置顶
@@ -316,40 +78,63 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
-// ========== 系统托盘 ==========
-function createTray() {
-  tray = new Tray(icon)
+// ========== 管理器初始化 ==========
 
-  const focusMainWindow = () => {
-    if (mainWindow.isDestroyed()) return
-    if (!mainWindow.isVisible()) mainWindow.show()
-    mainWindow.showInactive()
-    mainWindow.setAlwaysOnTop(true)
-    mainWindow.focus()
-  }
-
-  tray.on('click', focusMainWindow)
-
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: '打开 Todos',
-      type: 'normal',
-      click: focusMainWindow
-    },
-    {
-      label: '退出 Todos',
-      type: 'normal',
-      click: () => app.quit()
+/**
+ * 初始化吸附管理器
+ */
+function initSnapManager() {
+  snapManager = createSnapManager({
+    mainWindow,
+    // 吸附状态变化时通知渲染进程
+    onSnapChange: (snapped, direction) => {
+      mainWindow.webContents.send('window-snap', { snapped, direction })
     }
-  ])
+  })
+}
 
-  tray.setToolTip('Slide2do')
-  tray.setContextMenu(contextMenu)
+/**
+ * 初始化托盘管理器
+ */
+function initTrayManager() {
+  trayManager = createTrayManager({
+    mainWindow,
+    getLocale: () => currentLocale,
+    setLocale: (locale) => {
+      currentLocale = locale
+      setStoredLocale(locale)
+    },
+    getTheme: () => currentTheme,
+    setTheme: (theme) => {
+      currentTheme = theme
+      setStoredTheme(theme)
+    },
+    // 语言变化时通知渲染进程
+    onLocaleChange: (locale) => {
+      mainWindow.webContents.send('locale-changed', locale)
+      // 更新托盘菜单
+      trayManager.updateTrayMenu()
+    },
+    // 主题变化时通知渲染进程
+    onThemeChange: (theme) => {
+      mainWindow.webContents.send('theme-changed', theme)
+      // 更新托盘菜单
+      trayManager.updateTrayMenu()
+    }
+  })
+
+  trayManager.create()
 }
 
 // ========== IPC 处理器 ==========
+
+/**
+ * 注册 IPC 通信处理器
+ */
 function registerIpcHandlers() {
   ipcMain.on('minimize-app', () => {
     mainWindow.minimize()
@@ -360,24 +145,32 @@ function registerIpcHandlers() {
   })
 }
 
-// ========== 应用初始化 ==========
+// ========== 应用生命周期 ==========
+
 app.whenReady().then(() => {
+  // 设置应用 ID（Windows 通知必需）
   electronApp.setAppUserModelId('com.electron')
 
+  // 监听窗口创建，优化窗口快捷键
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // 创建窗口和初始化管理器
   createWindow()
-  createTray()
+  initSnapManager()
+  initTrayManager()
   registerIpcHandlers()
 
+  // macOS 激活事件
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    }
   })
 })
 
-// 退出逻辑
+// 所有窗口关闭时退出（非 macOS）
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
