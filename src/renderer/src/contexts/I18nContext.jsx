@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- context + hook pattern */
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { messages, SUPPORTED_LOCALES } from '../locales/messages'
+import { messages, SUPPORTED_LOCALES } from '@shared/locales'
 
 const STORAGE_KEY = 'slide2do-locale'
 
@@ -16,6 +16,18 @@ function interpolate(template, params) {
 
 export function I18nProvider({ children }) {
   const [locale, setLocaleState] = useState(() => {
+    // 优先从主进程同步获取语言设置
+    try {
+      if (window.api?.getInitialSettings) {
+        const settings = window.api.getInitialSettings()
+        if (SUPPORTED_LOCALES.includes(settings?.locale)) {
+          return settings.locale
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+    // 回退到本地存储
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (SUPPORTED_LOCALES.includes(stored)) return stored

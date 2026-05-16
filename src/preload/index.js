@@ -7,7 +7,9 @@ const api = {
   close: () => ipcRenderer.send('close-app'),
   onWindowSnap: (callback) => ipcRenderer.on('window-snap', (_event, value) => callback(value)),
   onThemeChanged: (callback) => ipcRenderer.on('theme-changed', (_event, value) => callback(value)),
-  onLocaleChanged: (callback) => ipcRenderer.on('locale-changed', (_event, value) => callback(value))
+  onLocaleChanged: (callback) => ipcRenderer.on('locale-changed', (_event, value) => callback(value)),
+  // 获取初始设置（同步主进程的 electron-store 状态）
+  getInitialSettings: () => ipcRenderer.sendSync('get-initial-settings')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

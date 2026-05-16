@@ -1,6 +1,6 @@
 /**
  * Slide2do 主进程入口
- * 
+ *
  * 职责：
  * 1. 应用初始化和生命周期管理
  * 2. 协调各个管理器模块
@@ -142,6 +142,14 @@ function registerIpcHandlers() {
 
   ipcMain.on('close-app', () => {
     app.quit()
+  })
+
+  // 返回初始设置给渲染进程
+  ipcMain.on('get-initial-settings', (event) => {
+    event.returnValue = {
+      theme: currentTheme,
+      locale: currentLocale
+    }
   })
 }
 

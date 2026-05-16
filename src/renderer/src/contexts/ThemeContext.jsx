@@ -8,6 +8,18 @@ const ThemeContext = createContext(null)
 
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
+    // 优先从主进程同步获取主题设置
+    try {
+      if (window.api?.getInitialSettings) {
+        const settings = window.api.getInitialSettings()
+        if (settings?.theme === 'dark' || settings?.theme === 'light') {
+          return settings.theme
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+    // 回退到本地存储
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored === 'dark' || stored === 'light') return stored

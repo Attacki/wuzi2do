@@ -45,6 +45,28 @@ export const trayMessages = {
   }
 }
 
+
+/** @type {Record<string, Record<string, string>>} */
+export const messages = {
+  'zh-CN': {
+    appTitle: '吾之所向',
+    addTodoPlaceholder: '渐入',
+    addTodoSubmit: '曰',
+    emptyTodos: '未有所向，何以为安',
+    todoAriaToggle: '切换 {{text}}',
+    todoContextTitle: '右键删除此项'
+  },
+  en: {
+    appTitle: 'My direction',
+    addTodoPlaceholder: 'Add a task',
+    addTodoSubmit: 'Add',
+    emptyTodos: 'Nothing here yet',
+    todoAriaToggle: 'Toggle {{text}}',
+    todoContextTitle: 'Right-click to delete'
+  }
+}
+
+
 /**
  * 获取托盘菜单文本
  * @param {string} locale - 当前语言
