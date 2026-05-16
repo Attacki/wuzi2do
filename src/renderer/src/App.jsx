@@ -3,11 +3,11 @@ import { useTodos } from './hooks/useTodos'
 import { TodoList } from './components/TodoList'
 import { AddTodoForm } from './components/AddTodoForm'
 import { useI18n } from './contexts/I18nContext'
-import './assets/animations.css'
+import './assets/styles/animations.css'
 
 function App() {
   const { t } = useI18n()
-  const { todos, addTodo, toggleTodo, removeTodo } = useTodos()
+  const { todos, addTodo, toggleTodo, removeTodo, updateTodo, reorderTodos } = useTodos()
   const [snap, setSnap] = useState({ snapped: false, direction: null, isAnimating: false })
 
   useEffect(() => {
@@ -40,7 +40,13 @@ function App() {
                 {t('appTitle')}
               </span>
             </header>
-            <TodoList todos={todos} onToggle={toggleTodo} onRemove={removeTodo} />
+            <TodoList
+              todos={todos}
+              onToggle={toggleTodo}
+              onRemove={removeTodo}
+              onUpdate={updateTodo}
+              onReorder={reorderTodos}
+            />
           </section>
         </div>
       </div>

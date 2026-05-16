@@ -1,4 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+
+const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 }
+
+function sortByPriority(todos) {
+  return [...todos].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority])
+}
 
 export function useTodos() {
   const [todos, setTodos] = useState(() => {
@@ -19,19 +25,41 @@ export function useTodos() {
     }
   }, [todos])
 
-  const addTodo = (text) => {
+  const addTodo = useCallback((text, priority = 'medium') => {
     if (text.trim()) {
-      setTodos([...todos, { id: Date.now(), text, completed: false }])
+      setTodos((prev) =>
+        sortByPriority([
+          ...prev,
+          { id: Date.now(), text, completed: false, priority, createdAt: Date.now() }
+        ])
+      )
     }
-  }
+  }, [])
 
-  const toggleTodo = (id) => {
-    setTodos(todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)))
-  }
+  const toggleTodo = useCallback((id) => {
+    setTodos((prev) =>
+      prev.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo))
+    )
+  }, [])
 
-  const removeTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id))
-  }
+  const removeTodo = useCallback((id) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id))
+  }, [])
 
-  return { todos, addTodo, toggleTodo, removeTodo }
+  const updateTodo = useCallback((id, updates) => {
+    setTodos((prev) =>
+      sortByPriority(prev.map((todo) => (todo.id === id ? { ...todo, ...updates } : todo)))
+    )
+  }, [])
+
+  const reorderTodos = useCallback((fromIndex, toIndex) => {
+    setTodos((prev) => {
+      const next = [...prev]
+      const [moved] = next.splice(fromIndex, 1)
+      next.splice(toIndex, 0, moved)
+      return next
+    })
+  }, [])
+
+  return { todos, addTodo, toggleTodo, removeTodo, updateTodo, reorderTodos }
 }

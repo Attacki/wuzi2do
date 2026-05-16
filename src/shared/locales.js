@@ -1,9 +1,8 @@
 /**
  * 共享的多语言配置和托盘菜单文本
- * 
- * 此文件是 messages.js 的镜像，专为主进程使用
+ *
  * 在 vite 配置中被 alias 到 @shared，可被 main/preload/renderer 共同访问
- * 
+ *
  * @shared 对应 src/shared/ 目录
  */
 
@@ -45,7 +44,6 @@ export const trayMessages = {
   }
 }
 
-
 /** @type {Record<string, Record<string, string>>} */
 export const messages = {
   'zh-CN': {
@@ -53,8 +51,20 @@ export const messages = {
     addTodoPlaceholder: '渐入',
     addTodoSubmit: '曰',
     emptyTodos: '未有所向，何以为安',
-    todoAriaToggle: '切换 {{text}}',
-    todoContextTitle: '右键删除此项'
+    todoAriaToggle: '更 {{text}}',
+    todoContextTitle: '右键可删',
+    filterAll: '全部',
+    filterActive: '未竟',
+    filterCompleted: '已成',
+    searchPlaceholder: '吾寻',
+    priorityHigh: '上',
+    priorityMedium: '中',
+    priorityLow: '下',
+    editPlaceholder: '修其名…',
+    dragHandle: '可移',
+    clearCompleted: '清已成',
+    completedCount: '已成 {{count}}',
+    activeCount: '尚余 {{count}}'
   },
   en: {
     appTitle: 'My direction',
@@ -62,10 +72,21 @@ export const messages = {
     addTodoSubmit: 'Add',
     emptyTodos: 'Nothing here yet',
     todoAriaToggle: 'Toggle {{text}}',
-    todoContextTitle: 'Right-click to delete'
+    todoContextTitle: 'Right-click to delete',
+    filterAll: 'All',
+    filterActive: 'Active',
+    filterCompleted: 'Completed',
+    searchPlaceholder: 'Search todos…',
+    priorityHigh: 'High',
+    priorityMedium: 'Medium',
+    priorityLow: 'Low',
+    editPlaceholder: 'Edit todo…',
+    dragHandle: 'Drag to reorder',
+    clearCompleted: 'Clear completed',
+    completedCount: '{{count}} completed',
+    activeCount: '{{count}} remaining'
   }
 }
-
 
 /**
  * 获取托盘菜单文本

@@ -1,73 +1,75 @@
 # Slide2do
 
-A desktop todo app built with **Electron** and **React**, using **electron-vite**. The UI uses a frameless window with a frosted-glass look; when the window snaps to a screen edge it can collapse into a slim strip and expand again with smooth transitions. Todo data is persisted in the renderer via **localStorage**.
+> **English version**: [README-EN.md](./README-EN.md)
 
-I warmly welcome any suggestions for improving this project. Its sole purpose is to serve as a simple, user-friendly to-do application—focusing purely on doing just this one thing well.
+一款使用 **Electron** 和 **React** 构建的桌面待办事项应用，基于 **electron-vite** 构建工具。界面采用无边框窗口设计，具有毛玻璃效果；当窗口吸附到屏幕边缘时，可以收缩成一条细窄条，再次交互时平滑展开。待办事项数据通过 **localStorage** 在渲染进程中持久化存储。
 
-| Item             | Details                                              |
-|------------------|------------------------------------------------------|
-| npm package name | `slide2do`                                           |
-| Runtime          | Electron (main process: window, tray, edge-snapping) |
-| Frontend         | React 19, Tailwind CSS 4, Vite                       |
+欢迎任何改进建议。这个项目的唯一目的是成为一个简单、易用的待办应用——专注于把这一件事做好。
 
-## Features
+| 项目            | 详情                                              |
+|-----------------|---------------------------------------------------|
+| npm 包名        | `slide2do`                                        |
+| 运行时          | Electron（主进程：窗口、托盘、边缘吸附）           |
+| 前端            | React 19, Tailwind CSS 4, Vite                    |
 
-- **Todos**: Add, toggle completion, and remove items; scrollable list with basic accessibility (e.g. `aria-label`).
-- **Window behavior**: Snapping to any screen edge shrinks the window to a narrow strip; interacting again restores it. The renderer listens for `window-snap` and runs matching CSS transitions.
-- **Desktop integration**: System tray, draggable chrome region; on Windows, hit-testing for very small windows uses `setShape` where needed for correct behavior.
-- **Persistence**: Todos are stored as JSON in `localStorage` under the key `todos`.
+## 功能特性
 
-## Requirements
+- **待办事项**：添加、切换完成状态、删除事项；可滚动列表，具备基础无障碍支持（如 `aria-label`）。
+- **窗口行为**：吸附到任意屏幕边缘时，窗口缩小成窄条；再次交互时恢复。渲染进程监听 `window-snap` 事件并执行相应的 CSS 过渡动画。
+- **桌面集成**：系统托盘、可拖拽的标题栏区域；在 Windows 上，对于极小窗口的点击测试在必要时使用 `setShape` 以确保正确行为。
+- **持久化存储**：待办事项以 JSON 格式存储在 `localStorage` 的 `todos` 键下。
 
-- **Node.js**: Current LTS is recommended (match any `engines` field in `package.json` if present).
-- **OS**: Development and packaging scripts target Windows, macOS, and Linux (see build commands below for artifacts).
+## 环境要求
 
-## Development and build
+- **Node.js**：推荐使用当前 LTS 版本（如 `package.json` 中有 `engines` 字段，请保持一致）。
+- **操作系统**：开发和打包脚本支持 Windows、macOS 和 Linux（各平台的构建产物见下方构建命令）。
+
+## 开发与构建
 
 ```bash
-# Install dependencies
+# 安装依赖
 npm install
 
-# Development with HMR
+# 开发模式（支持热模块替换）
 npm run dev
 
-# Preview the production build locally
+# 本地预览生产构建
 npm run start
 
-# Production build (output under conventions such as out/)
+# 生产构建（产物默认输出到 out/ 目录）
 npm run build
 ```
 
-### Packaged installers
+### 打包安装包
 
-After `npm run build`, use **electron-builder** to produce per-platform packages or unpacked directories:
+执行 `npm run build` 后，使用 **electron-builder** 生成各平台安装包或未打包目录：
 
-| Command                | Purpose                                                 |
-|------------------------|---------------------------------------------------------|
-| `npm run build:unpack` | Unpacked output for debugging                           |
-| `npm run build:win`    | Windows                                                 |
-| `npm run build:mac`    | macOS                                                   |
-| `npm run build:linux`  | Linux (e.g. AppImage, deb — see `electron-builder.yml`) |
+| 命令                  | 用途                                              |
+|-----------------------|---------------------------------------------------|
+| `npm run build:unpack` | 未打包输出，用于调试                              |
+| `npm run build:win`    | Windows                                           |
+| `npm run build:mac`    | macOS                                             |
+| `npm run build:linux`  | Linux（如 AppImage、deb——详见 `electron-builder.yml`） |
 
-Installer names, app ID, and related metadata are defined in **`electron-builder.yml`** at the repo root (`productName` and similar may differ from the repository display name; adjust before release).
+安装包名称、应用 ID 及相关元数据定义在仓库根目录的 **`electron-builder.yml`** 中（`productName` 等字段可能与仓库显示名称不同，发布前请调整）。
 
-### Code quality
+### 代码质量
 
 ```bash
 npm run lint
 npm run format
 ```
 
-## Project layout
+## 项目结构
 
-- `src/main/` — Electron main process (window, tray, IPC, snap logic).
-- `src/renderer/` — React app (components, `hooks/useTodos`, etc.).
-- `src/preload/` — Preload script exposing a controlled `window.api` to the renderer (e.g. window snap notifications).
+- `src/main/` — Electron 主进程（窗口、托盘、IPC、吸附逻辑）。
+- `src/renderer/` — React 应用（组件、`hooks/useTodos` 等）。
+- `src/preload/` — 预加载脚本，向渲染进程暴露受控的 `window.api`（如窗口吸附通知）。
 
-## Preview
+## 预览
 
-![Slide2do demo](/resources/slide2do.gif)
+![Slide2do 演示](/resources/slide2do.gif)
 
 ---
 
-This project started from the [electron-vite](https://electron-vite.org) template. For auto-updates, configure the `publish` section in `electron-builder.yml` and wire up **electron-updater** with your update URL and code signing as needed.
+本项目基于 [electron-vite](https://electron-vite.org) 模板创建。如需自动更新功能，请配置 `electron-builder.yml` 中的 `publish` 部分，并使用 **electron-updater** 配合更新 URL 和代码签名进行集成。
