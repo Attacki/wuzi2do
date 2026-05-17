@@ -3,14 +3,14 @@ productName: wuzi2do
 directories:
   buildResources: build
 files:
-  - "!**/.vscode/*"
-  - "!src/*"
-  - "!electron.vite.config.{js,ts,mjs,cjs}"
-  - "!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
-  - "!{.env,.env.*,.npmrc,pnpm-lock.yaml}"
-  - "!*.log"
-  - "!temp/*"
-compression: "maximum"
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!*.log'
+  - '!temp/*'
+compression: 'maximum'
 win:
   executableName: wuzi2do
   target:
@@ -24,7 +24,7 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-  artifactName: ${name}-${version}-${os}-${arch}-setup.${ext}
+  artifactName: ${name}-${version}-${os}-${arch}-beta.${ext}
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:

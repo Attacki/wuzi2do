@@ -15,13 +15,6 @@ function App() {
   const undoTodoRef = useRef(null)
   const undoTimerRef = useRef(null)
 
-  useEffect(() => {
-    window.api.onWindowSnap(({ snapped, direction }) => {
-      setSnap({ snapped, direction, isAnimating: true })
-      setTimeout(() => setSnap((prev) => ({ ...prev, isAnimating: false })), 500)
-    })
-  }, [])
-
   const handleRemove = useCallback(
     (todo) => {
       removeTodo(todo.id)

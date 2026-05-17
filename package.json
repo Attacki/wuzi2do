@@ -16,7 +16,7 @@
     "clean": "rimraf dist out .vite node_modules/.cache",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
-    "build:win": "npm run build && electron-builder --win",
+    "build:win": "npm run build && electron-builder --win --x64 --ia32 && node scripts/postbuild-win.mjs",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux"
   },
@@ -26,6 +26,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
+    "archiver": "^8.0.0",
     "electron-store": "^11.0.2",
     "electron-updater": "^6.3.9",
     "prop-types": "^15.8.1",
