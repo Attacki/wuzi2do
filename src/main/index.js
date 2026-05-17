@@ -1,5 +1,5 @@
 /**
- * Slide2do 主进程入口
+ * Wuzi2do 主进程入口
  *
  * 职责：
  * 1. 应用初始化和生命周期管理
@@ -61,9 +61,13 @@ function createWindow() {
   // 监听窗口移动，用于边缘吸附
   mainWindow.on('moved', () => snapManager.handleWindowMove())
 
-  // 失去焦点时保持置顶
+  // 失去焦点时保持置顶，若已吸附则卷回
   mainWindow.on('blur', () => {
+    console.log('blur')
     mainWindow.setAlwaysOnTop(true)
+    if (snapManager.state.isSnapped) {
+      snapManager.rollUp()
+    }
   })
 
   // 阻止打开新窗口，改为外部浏览器打开
@@ -103,6 +107,7 @@ function initSnapManager() {
 function initTrayManager() {
   trayManager = createTrayManager({
     mainWindow,
+    snapManager,
     getLocale: () => currentLocale,
     setLocale: (locale) => {
       currentLocale = locale

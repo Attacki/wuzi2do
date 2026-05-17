@@ -5,7 +5,12 @@
 
 import { screen } from 'electron'
 import { WINDOW_CONFIG, SNAP_CONFIG } from '../config/constants.js'
-import { clearRolledShape, applyRolledShape, rolledHitScreenRect, pointInRect } from '../utils/windowShape.js'
+import {
+  clearRolledShape,
+  applyRolledShape,
+  rolledHitScreenRect,
+  pointInRect
+} from '../utils/windowShape.js'
 
 /**
  * 创建吸附管理器实例
@@ -19,7 +24,9 @@ export function createSnapManager({ mainWindow, onSnapChange }) {
     /** 当前吸附状态 */
     state: {
       direction: null,
-      isSnapped: false
+      isSnapped: false,
+      isAnimating: false,
+      suppressRollUp: false
     },
     /** 鼠标轮询定时器 */
     mousePollInterval: null,
@@ -157,10 +164,8 @@ export function createSnapManager({ mainWindow, onSnapChange }) {
      * @param {string} direction - 当前吸附方向
      */
     startMousePolling(direction) {
-      let isAnimating = false
-
       this.mousePollInterval = setInterval(() => {
-        if (!this.state.isSnapped || isAnimating) return
+        if (!this.state.isSnapped || this.state.isAnimating) return
 
         const cursor = screen.getCursorScreenPoint()
         const bounds = mainWindow.getBounds()
@@ -175,17 +180,17 @@ export function createSnapManager({ mainWindow, onSnapChange }) {
 
         // 鼠标进入卷起的窗口 -> 展开
         if (isInside && isRolledUp) {
-          isAnimating = true
+          this.state.isAnimating = true
           const display = screen.getDisplayMatching(bounds)
           const restoreBounds = this.calculateExpandedBounds(direction, bounds, display.workArea)
           clearRolledShape(mainWindow)
           mainWindow.setBounds(restoreBounds)
           this.notifySnapChange(false, direction)
-          setTimeout(() => (isAnimating = false), SNAP_CONFIG.animationDelay)
+          setTimeout(() => (this.state.isAnimating = false), SNAP_CONFIG.animationDelay)
         }
         // 鼠标离开展开的窗口 -> 卷起
-        else if (!isInside && !isRolledUp) {
-          isAnimating = true
+        else if (!isInside && !isRolledUp && !this.state.suppressRollUp) {
+          this.state.isAnimating = true
           this.notifySnapChange(true, direction)
           setTimeout(() => {
             if (this.state.isSnapped) {
@@ -195,8 +200,12 @@ export function createSnapManager({ mainWindow, onSnapChange }) {
               mainWindow.setBounds(newBounds)
               applyRolledShape(mainWindow, direction, SNAP_CONFIG.threshold)
             }
-            isAnimating = false
+            this.state.isAnimating = false
           }, SNAP_CONFIG.animationDelay)
+        }
+        // 鼠标在展开的窗口内 -> 解除抑制
+        else if (isInside && !isRolledUp && this.state.suppressRollUp) {
+          this.state.suppressRollUp = false
         }
       }, SNAP_CONFIG.pollInterval)
     },
@@ -248,6 +257,52 @@ export function createSnapManager({ mainWindow, onSnapChange }) {
           this.setup(newSnappedDirection)
         }
       }
+    },
+
+    /**
+     * 主动卷起窗口（失去焦点时调用）
+     * 仅在窗口已吸附且当前为展开状态时生效
+     */
+    rollUp() {
+      if (!this.state.isSnapped) return
+      if (this.state.suppressRollUp) return
+
+      const direction = this.state.direction
+      const bounds = mainWindow.getBounds()
+      const { initWidth, initHeight } = WINDOW_CONFIG
+      const isRolledUp = bounds.height < initHeight || bounds.width < initWidth
+      if (isRolledUp) return
+
+      this.notifySnapChange(true, direction)
+      setTimeout(() => {
+        if (this.state.isSnapped) {
+          const currentBounds = mainWindow.getBounds()
+          const newBounds = this.calculateRolledBounds(direction, currentBounds)
+          mainWindow.setMinimumSize(1, 1)
+          mainWindow.setBounds(newBounds)
+          applyRolledShape(mainWindow, direction, SNAP_CONFIG.threshold)
+        }
+      }, SNAP_CONFIG.animationDelay)
+    },
+
+    /**
+     * 展开窗口但不退出吸附状态（待吸附）
+     * 从托盘打开窗口时调用，保留 isSnapped 使失焦后可重新卷回
+     */
+    expand() {
+      if (!this.state.isSnapped) return
+
+      this.state.suppressRollUp = true
+
+      const direction = this.state.direction
+      const bounds = mainWindow.getBounds()
+      const display = screen.getDisplayMatching(bounds)
+      const restoreBounds = this.calculateExpandedBounds(direction, bounds, display.workArea)
+
+      clearRolledShape(mainWindow)
+      mainWindow.setBounds(restoreBounds)
+      mainWindow.setBounds(mainWindow.getBounds())
+      this.notifySnapChange(false, direction)
     }
   }
 

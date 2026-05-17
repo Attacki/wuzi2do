@@ -1,23 +1,22 @@
-# Slide2do
+# Wuzi2do
 
 > **English version**: [README-EN.md](./README-EN.md)
 
-一款使用 **Electron** 和 **React** 构建的桌面待办事项应用，基于 **electron-vite** 构建工具。界面采用无边框窗口设计，具有毛玻璃效果；当窗口吸附到屏幕边缘时，可以收缩成一条细窄条，再次交互时平滑展开。待办事项数据通过 **localStorage** 在渲染进程中持久化存储。
+一款使用 **Electron** 和 **React** 构建的桌面工具应用，基于 **electron-vite** 构建工具。界面采用无边框窗口设计，当窗口吸附到屏幕边缘时，有流畅的渐入渐出动画。
 
-欢迎任何改进建议。这个项目的唯一目的是成为一个简单、易用的待办应用——专注于把这一件事做好。
+欢迎任何改进建议。这个项目的唯一目的是成为一个桌面工具助手——专注于把这一件事做好。
 
-| 项目            | 详情                                              |
-|-----------------|---------------------------------------------------|
-| npm 包名        | `wuzi2do`                                        |
-| 运行时          | Electron（主进程：窗口、托盘、边缘吸附）           |
-| 前端            | React 19, Tailwind CSS 4, Vite                    |
+| 项目   | 详情                                |
+|--------|-------------------------------------|
+| 运行时 | Electron（主进程：窗口、托盘、边缘吸附） |
+| 前端   | React 19, Tailwind CSS 4, Vite      |
 
 ## 功能特性
 
 - **待办事项**：添加、切换完成状态、删除事项；可滚动列表，具备基础无障碍支持（如 `aria-label`）。
 - **窗口行为**：吸附到任意屏幕边缘时，窗口缩小成窄条；再次交互时恢复。渲染进程监听 `window-snap` 事件并执行相应的 CSS 过渡动画。
 - **桌面集成**：系统托盘、可拖拽的标题栏区域；在 Windows 上，对于极小窗口的点击测试在必要时使用 `setShape` 以确保正确行为。
-- **持久化存储**：待办事项以 JSON 格式存储在 `localStorage` 的 `todos` 键下。
+- **持久化存储**：待办事项以 JSON 格式存储在 `electron-store`下。
 
 ## 环境要求
 
@@ -44,11 +43,11 @@ npm run build
 
 执行 `npm run build` 后，使用 **electron-builder** 生成各平台安装包或未打包目录：
 
-| 命令                  | 用途                                              |
-|-----------------------|---------------------------------------------------|
-| `npm run build:unpack` | 未打包输出，用于调试                              |
-| `npm run build:win`    | Windows                                           |
-| `npm run build:mac`    | macOS                                             |
+| 命令                   | 用途                                                |
+|------------------------|-----------------------------------------------------|
+| `npm run build:unpack` | 未打包输出，用于调试                                 |
+| `npm run build:win`    | Windows                                             |
+| `npm run build:mac`    | macOS                                               |
 | `npm run build:linux`  | Linux（如 AppImage、deb——详见 `electron-builder.yml`） |
 
 安装包名称、应用 ID 及相关元数据定义在仓库根目录的 **`electron-builder.yml`** 中（`productName` 等字段可能与仓库显示名称不同，发布前请调整）。
@@ -68,7 +67,7 @@ npm run format
 
 ## 预览
 
-![Slide2do 演示](/resources/wuzi2do.gif)
+![Wuzi2do 演示](/resources/wuzi2do.gif)
 
 ---
 

@@ -9,7 +9,7 @@ import {
   SUPPORTED_THEMES,
   DEFAULT_SETTINGS,
   STORE_KEYS
-} from '@shared/locales'
+} from '@/shared/locales'
 
 /** 窗口初始尺寸配置 */
 export const WINDOW_CONFIG = {

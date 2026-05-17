@@ -1,9 +1,5 @@
 /**
  * 共享的多语言配置和托盘菜单文本
- *
- * 在 vite 配置中被 alias 到 @shared，可被 main/preload/renderer 共同访问
- *
- * @shared 对应 src/shared/ 目录
  */
 
 /** 支持的语言列表 */
@@ -27,20 +23,20 @@ export const STORE_KEYS = {
 /** 托盘菜单翻译文本 */
 export const trayMessages = {
   'zh-CN': {
-    openApp: '打开 Todos',
+    openApp: '打开应用',
     theme: '主题',
     light: '浅色',
     dark: '深色',
     language: '语言',
-    quit: '退出 Todos'
+    quit: '退出应用'
   },
   en: {
-    openApp: 'Open Todos',
+    openApp: 'Open Application',
     theme: 'Theme',
     light: 'Light',
     dark: 'Dark',
     language: 'Language',
-    quit: 'Quit Todos'
+    quit: 'Quit Application'
   }
 }
 

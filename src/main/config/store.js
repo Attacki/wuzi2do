@@ -4,7 +4,7 @@
  */
 
 import Store from 'electron-store'
-import { SUPPORTED_LOCALES, SUPPORTED_THEMES, DEFAULT_SETTINGS, STORE_KEYS } from '@shared/locales'
+import { SUPPORTED_LOCALES, SUPPORTED_THEMES, DEFAULT_SETTINGS, STORE_KEYS } from '@/shared/locales'
 
 // 初始化 Store 实例
 const store = new Store({

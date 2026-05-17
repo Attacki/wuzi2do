@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- context + hook pattern */
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { messages, SUPPORTED_LOCALES } from '@shared/locales'
+import { messages, SUPPORTED_LOCALES } from '@/shared/locales'
 
 const STORAGE_KEY = 'wuzi2do-locale'
 

@@ -9,7 +9,7 @@ export default defineConfig({
     resolve: {
       alias: {
         // 确保这里的路径指向你实际的 shared 目录
-        '@shared': resolve(__dirname, 'src/shared')
+        '@': resolve(__dirname, 'src')
       }
     },
     build: {
@@ -26,7 +26,7 @@ export default defineConfig({
     resolve: {
       alias: {
         // 确保这里的路径指向你实际的 shared 目录
-        '@shared': resolve(__dirname, 'src/shared')
+        '@': resolve(__dirname, 'src')
       }
     },
     build: {
@@ -40,8 +40,7 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src'),
-        '@shared': resolve('src/shared')
+        '@': resolve(__dirname, 'src')
       }
     },
     plugins: [react(), tailwindcss()]

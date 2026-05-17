@@ -5,12 +5,13 @@
 
 import { Menu, Tray, app } from 'electron'
 import icon from '../../../resources/icon-app-tray.png?asset'
-import { trayMessages, t, SUPPORTED_LOCALES, SUPPORTED_THEMES } from '@shared/locales'
+import { trayMessages, SUPPORTED_LOCALES } from '@/shared/locales'
 
 /**
  * 创建托盘管理器实例
  * @param {object} options - 配置选项
  * @param {BrowserWindow} options.mainWindow - 主窗口引用
+ * @param {object} options.snapManager - 吸附管理器实例，用于窗口展开
  * @param {function} options.getLocale - 获取当前语言的函数
  * @param {function} options.setLocale - 设置语言的函数
  * @param {function} options.getTheme - 获取当前主题的函数
@@ -21,6 +22,7 @@ import { trayMessages, t, SUPPORTED_LOCALES, SUPPORTED_THEMES } from '@shared/lo
  */
 export function createTrayManager({
   mainWindow,
+  snapManager,
   getLocale,
   setLocale,
   getTheme,
@@ -32,9 +34,13 @@ export function createTrayManager({
 
   /**
    * 聚焦并显示主窗口
+   * 如果处于吸附状态，先展开窗口
    */
   function focusMainWindow() {
     if (mainWindow.isDestroyed()) return
+    if (snapManager.state.isSnapped) {
+      snapManager.expand()
+    }
     if (!mainWindow.isVisible()) mainWindow.show()
     mainWindow.showInactive()
     mainWindow.setAlwaysOnTop(true)
@@ -51,13 +57,6 @@ export function createTrayManager({
     const msg = trayMessages[currentLocale] || trayMessages['zh-CN']
 
     return [
-      // 打开 Todos
-      {
-        label: msg.openApp,
-        type: 'normal',
-        click: focusMainWindow
-      },
-      { type: 'separator' },
       // 主题子菜单
       {
         label: msg.theme,
@@ -124,7 +123,7 @@ export function createTrayManager({
    */
   function create() {
     tray = new Tray(icon)
-    tray.setToolTip('Slide2do')
+    tray.setToolTip('Wuzi2do')
     updateTrayMenu()
 
     // 点击托盘图标聚焦窗口
