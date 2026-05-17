@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import PropTypes from 'prop-types'
 import { messages, SUPPORTED_LOCALES } from '@shared/locales'
 
-const STORAGE_KEY = 'slide2do-locale'
+const STORAGE_KEY = 'wuzi2do-locale'
 
 const I18nContext = createContext(null)
 

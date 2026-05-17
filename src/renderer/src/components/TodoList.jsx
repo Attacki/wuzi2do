@@ -17,7 +17,7 @@ function TodoFilters({ filter, onFilterChange, searchQuery, onSearchChange }) {
     <div className="flex items-center gap-2 px-3 py-1.5">
       <input
         type="text"
-        className="flex-1 h-8 px-3 rounded-md border border-app-input-border bg-app-input-bg text-app-todo-text text-sm font-medium placeholder:text-app-placeholder focus:outline-none focus:border-app-focus-border"
+        className="flex-1 h-8 px-3 rounded-md border border-app-input-border bg-app-input-bg text-app-input-text text-sm font-medium placeholder:text-app-placeholder focus:outline-none focus:border-app-focus-border focus:shadow-[0_0_0_3px_var(--app-focus-ring)]"
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder={t('searchPlaceholder')}
@@ -26,9 +26,9 @@ function TodoFilters({ filter, onFilterChange, searchQuery, onSearchChange }) {
         {filters.map(({ key, label }) => (
           <button
             key={key}
-            className={`px-2.5 py-1 rounded-md text-xs font-semibold border transition-colors ${
+            className={`px-2.5 py-1 rounded-md text-xs border transition-colors ${
               filter === key
-                ? 'bg-[rgba(138,130,173,0.25)] text-base border-[rgba(138,130,173,0.35)]'
+                ? 'bg-[rgba(138,130,173,0.25)] text-[#323232] border-[rgba(138,130,173,0.35)]'
                 : 'bg-transparent text-app-empty border-transparent hover:text-app-todo-text hover:bg-[rgba(138,130,173,0.1)]'
             }`}
             onClick={() => onFilterChange(key)}

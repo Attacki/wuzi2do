@@ -10,7 +10,7 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/icon-app.png?asset'
 
 // 配置和存储
 import { WINDOW_CONFIG } from './config/constants.js'

@@ -76,7 +76,7 @@ function TodoItem({ todo, onToggle, onRemove, onUpdate }) {
       className={`group flex items-start gap-1.5 py-2.5 px-2 rounded-md border border-app-todo-border overflow-hidden ${rowBg}`}
       onContextMenu={(e) => {
         e.preventDefault()
-        onRemove(todo.id)
+        onRemove(todo)
       }}
       title={t('todoContextTitle')}
     >
@@ -91,7 +91,7 @@ function TodoItem({ todo, onToggle, onRemove, onUpdate }) {
       </button>
 
       <span
-        className={`text-[10px] font-bold px-2 py-1 rounded-full border leading-none shrink-0  ${priorityColor[todo.priority] || priorityColor.medium}`}
+        className={`text-[10px] font-bold px-2 py-1 rounded-full border leading-none shrink-0 mt-px ${priorityColor[todo.priority] || priorityColor.medium}`}
       >
         {priorityLabel[todo.priority] || priorityLabel.medium}
       </span>
@@ -100,7 +100,7 @@ function TodoItem({ todo, onToggle, onRemove, onUpdate }) {
         <textarea
           ref={editRef}
           type="text"
-          className="flex-grow min-w-0 h-40 px-2 overflow-auto hide-scrollbar rounded-md border border-app-focus-border bg-app-input-bg text-app-input-text text-base font-bold outline-none shadow-[0_0_0_2px_var(--app-focus-ring)]"
+          className="flex-grow min-w-0 h-40 px-2 overflow-auto hide-scrollbar rounded-md border border-app-focus-border bg-app-input-bg text-app-input-text text-base outline-none shadow-[0_0_0_2px_var(--app-focus-ring)]"
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
           onBlur={handleEditBlur}
@@ -110,7 +110,7 @@ function TodoItem({ todo, onToggle, onRemove, onUpdate }) {
       ) : (
         <span className="relative grow max-w-[calc(100%-40px)] transition-all duration-300 ease-in-out min-h-[20px] max-h-[20px] hover:max-h-40 overflow-auto hide-scrollbar">
           <span
-            className={`block cursor-pointer text-app-todo-text text-base font-bold leading-tight break-words line-clamp-2 group-hover:line-clamp-none ${
+            className={`block cursor-pointer text-app-todo-text text-base leading-tight break-words line-clamp-2 group-hover:line-clamp-none ${
               todo.completed ? 'line-through text-app-todo-text-done' : ''
             }`}
             onDoubleClick={handleDoubleClick}

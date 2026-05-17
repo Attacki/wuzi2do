@@ -8,9 +8,9 @@ import { I18nProvider } from './contexts/I18nContext'
 
 function bootstrapDocument() {
   try {
-    const theme = localStorage.getItem('slide2do-theme')
+    const theme = localStorage.getItem('wuzi2do-theme')
     document.documentElement.dataset.theme = theme === 'dark' || theme === 'light' ? theme : 'light'
-    const locale = localStorage.getItem('slide2do-locale')
+    const locale = localStorage.getItem('wuzi2do-locale')
     document.documentElement.lang = locale === 'en' ? 'en' : 'zh-CN'
   } catch {
     document.documentElement.dataset.theme = 'light'

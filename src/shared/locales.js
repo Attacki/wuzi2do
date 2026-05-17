@@ -56,7 +56,7 @@ export const messages = {
     filterAll: '全部',
     filterActive: '未竟',
     filterCompleted: '已成',
-    searchPlaceholder: '吾寻',
+    searchPlaceholder: '寻索',
     priorityHigh: '上',
     priorityMedium: '中',
     priorityLow: '下',
@@ -64,7 +64,9 @@ export const messages = {
     dragHandle: '可移',
     clearCompleted: '清已成',
     completedCount: '已成 {{count}}',
-    activeCount: '尚余 {{count}}'
+    activeCount: '尚余 {{count}}',
+    todoDeleted: '已弃之',
+    undo: '溯回'
   },
   en: {
     appTitle: 'My direction',
@@ -84,7 +86,9 @@ export const messages = {
     dragHandle: 'Drag to reorder',
     clearCompleted: 'Clear completed',
     completedCount: '{{count}} completed',
-    activeCount: '{{count}} remaining'
+    activeCount: '{{count}} remaining',
+    todoDeleted: 'Deleted',
+    undo: 'Undo'
   }
 }
 

@@ -41,6 +41,9 @@ npm run build:unpack # 未打包输出，用于调试
 - `src/renderer/src/assets/animations.css` 定义相关窗口吸附动画
 - 标题栏区域使用 `-webkit-app-region: drag`进行控制拖拽
 
+默认样式
+- 所有带有边框(或者outline)的元素和按钮,默认都设置圆角样式为`rounded-md`
+
 ## 代码规范
 
 - ESLint 扁平配置，继承 `@electron-toolkit/eslint-config` 和 `@electron-toolkit/eslint-config-prettier`
@@ -49,5 +52,5 @@ npm run build:unpack # 未打包输出，用于调试
 ## 关键文件
 
 - `electron.vite.config.mjs` - Vite 配置，包含 main、preload、renderer 的别名 `@renderer` → `src/renderer/src`
-- `electron-builder.yml` - 打包配置（productName: slide2do, appId: com.electron.app）
+- `electron-builder.yml` - 打包配置（productName: wuzi2do, appId: com.electron.app）
 - `src/main/index.js:18` - Windows 无边框窗口最小尺寸的 setShape 解决方案说明

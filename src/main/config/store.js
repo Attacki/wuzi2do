@@ -8,7 +8,7 @@ import { SUPPORTED_LOCALES, SUPPORTED_THEMES, DEFAULT_SETTINGS, STORE_KEYS } fro
 
 // 初始化 Store 实例
 const store = new Store({
-  name: 'slide2do-settings',
+  name: 'wuzi2do-settings',
   defaults: DEFAULT_SETTINGS
 })
 

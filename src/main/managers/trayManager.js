@@ -4,7 +4,7 @@
  */
 
 import { Menu, Tray, app } from 'electron'
-import icon from '../../../resources/icon.png?asset'
+import icon from '../../../resources/icon-app-tray.png?asset'
 import { trayMessages, t, SUPPORTED_LOCALES, SUPPORTED_THEMES } from '@shared/locales'
 
 /**

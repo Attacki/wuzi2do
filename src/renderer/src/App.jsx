@@ -1,14 +1,49 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTodos } from './hooks/useTodos'
 import { TodoList } from './components/TodoList'
 import { AddTodoForm } from './components/AddTodoForm'
+import { UndoToast } from './components/UndoToast'
 import { useI18n } from './contexts/I18nContext'
 import './assets/styles/animations.css'
 
 function App() {
   const { t } = useI18n()
-  const { todos, addTodo, toggleTodo, removeTodo, updateTodo, reorderTodos } = useTodos()
+  const { todos, addTodo, toggleTodo, removeTodo, updateTodo, reorderTodos, restoreTodo } =
+    useTodos()
   const [snap, setSnap] = useState({ snapped: false, direction: null, isAnimating: false })
+  const [showUndo, setShowUndo] = useState(false)
+  const undoTodoRef = useRef(null)
+  const undoTimerRef = useRef(null)
+
+  useEffect(() => {
+    window.api.onWindowSnap(({ snapped, direction }) => {
+      setSnap({ snapped, direction, isAnimating: true })
+      setTimeout(() => setSnap((prev) => ({ ...prev, isAnimating: false })), 500)
+    })
+  }, [])
+
+  const handleRemove = useCallback(
+    (todo) => {
+      removeTodo(todo.id)
+      undoTodoRef.current = todo
+      setShowUndo(true)
+      clearTimeout(undoTimerRef.current)
+      undoTimerRef.current = setTimeout(() => {
+        setShowUndo(false)
+        undoTodoRef.current = null
+      }, 5000)
+    },
+    [removeTodo]
+  )
+
+  const handleUndo = useCallback(() => {
+    if (undoTodoRef.current) {
+      restoreTodo(undoTodoRef.current)
+      undoTodoRef.current = null
+    }
+    clearTimeout(undoTimerRef.current)
+    setShowUndo(false)
+  }, [restoreTodo])
 
   useEffect(() => {
     window.api.onWindowSnap(({ snapped, direction }) => {
@@ -43,12 +78,13 @@ function App() {
             <TodoList
               todos={todos}
               onToggle={toggleTodo}
-              onRemove={removeTodo}
+              onRemove={handleRemove}
               onUpdate={updateTodo}
               onReorder={reorderTodos}
             />
           </section>
         </div>
+        <UndoToast show={showUndo} onUndo={handleUndo} />
       </div>
     </div>
   )

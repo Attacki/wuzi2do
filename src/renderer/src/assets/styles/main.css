@@ -72,6 +72,12 @@
   --app-scrollbar-thumb-glow: rgb(255 255 255 / 0.28);
 
   --app-overlay-image-opacity: 1;
+  
+  --app-toast-bg: rgba(0, 0, 0, 0);
+  --app-toast-text: #3b3b3b;
+  --app-toast-border: rgba(138, 130, 173, 0.35);
+  --app-toast-btn-bg: rgba(138, 130, 173, 0.25);
+  --app-toast-btn-bg-hover: rgb(255 255 255 / 0.2);
 
   --color-background: var(--ev-c-black);
   --color-background-soft: var(--ev-c-black-soft);
@@ -124,6 +130,12 @@ html[data-theme='dark'] {
   --app-scrollbar-thumb-glow: rgb(255 255 255 / 0.12);
 
   --app-overlay-image-opacity: 0.35;
+
+  --app-toast-bg: rgba(0, 0, 0, 0);
+  --app-toast-text: #ffffff;
+  --app-toast-border: rgba(138, 130, 173, 0.35);
+  --app-toast-btn-bg: rgba(138, 130, 173, 0.25);
+  --app-toast-btn-bg-hover: rgb(255 255 255 / 0.2);
 }
 
 @theme {
@@ -147,6 +159,11 @@ html[data-theme='dark'] {
   --color-app-todo-text: var(--app-todo-text);
   --color-app-todo-text-done: var(--app-todo-text-done);
   --color-app-empty: var(--app-empty-text);
+  --color-app-toast-bg: var(--app-toast-bg);
+  --color-app-toast-text: var(--app-toast-text);
+  --color-app-toast-border: var(--app-toast-border);
+  --color-app-toast-btn-bg: var(--app-toast-btn-bg);
+  --color-app-toast-btn-bg-hover: var(--app-toast-btn-bg-hover);
 }
 
 body {
@@ -258,6 +275,7 @@ body {
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;

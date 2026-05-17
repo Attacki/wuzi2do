@@ -8,7 +8,7 @@
 
 | 项目            | 详情                                              |
 |-----------------|---------------------------------------------------|
-| npm 包名        | `slide2do`                                        |
+| npm 包名        | `wuzi2do`                                        |
 | 运行时          | Electron（主进程：窗口、托盘、边缘吸附）           |
 | 前端            | React 19, Tailwind CSS 4, Vite                    |
 
@@ -68,7 +68,7 @@ npm run format
 
 ## 预览
 
-![Slide2do 演示](/resources/slide2do.gif)
+![Slide2do 演示](/resources/wuzi2do.gif)
 
 ---
 

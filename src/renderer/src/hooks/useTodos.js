@@ -61,5 +61,9 @@ export function useTodos() {
     })
   }, [])
 
-  return { todos, addTodo, toggleTodo, removeTodo, updateTodo, reorderTodos }
+  const restoreTodo = useCallback((todo) => {
+    setTodos((prev) => sortByPriority([...prev, todo]))
+  }, [])
+
+  return { todos, addTodo, toggleTodo, removeTodo, updateTodo, reorderTodos, restoreTodo }
 }

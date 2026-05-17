@@ -8,7 +8,7 @@ I warmly welcome any suggestions for improving this project. Its sole purpose is
 
 | Item             | Details                                              |
 |------------------|------------------------------------------------------|
-| npm package name | `slide2do`                                           |
+| npm package name | `wuzi2do`                                           |
 | Runtime          | Electron (main process: window, tray, edge-snapping) |
 | Frontend         | React 19, Tailwind CSS 4, Vite                       |
 
@@ -68,7 +68,7 @@ npm run format
 
 ## Preview
 
-![Slide2do demo](/resources/slide2do.gif)
+![Slide2do demo](/resources/wuzi2do.gif)
 
 ---
 

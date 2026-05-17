@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
-const STORAGE_KEY = 'slide2do-theme'
+const STORAGE_KEY = 'wuzi2do-theme'
 
 const ThemeContext = createContext(null)
 

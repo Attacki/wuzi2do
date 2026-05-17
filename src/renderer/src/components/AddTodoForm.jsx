@@ -21,7 +21,7 @@ const priorities = [
 ]
 
 const inputClassName =
-  'flex-1 h-[50px] px-4 rounded-md border border-app-input-border bg-app-input-bg text-app-input-text text-base font-medium placeholder:text-app-placeholder focus:outline-none focus:border-app-focus-border focus:shadow-[0_0_0_3px_var(--app-focus-ring)]'
+  'flex-1 h-[60px] overflow-auto hide-scrollbar py-1.5 px-4 rounded-md border border-app-input-border bg-app-input-bg text-app-input-text text-base font-medium placeholder:text-app-placeholder focus:outline-none focus:border-app-focus-border focus:shadow-[0_0_0_3px_var(--app-focus-ring)]'
 
 const buttonClassName =
   'h-[50px] min-w-[50px] border rounded-md border-app-input-border bg-app-input-bg text-app-input-text text-xl font-semibold cursor-pointer transition-transform duration-200 hover:bg-app-button-hover-bg app-button-hover-shadow'
@@ -29,7 +29,7 @@ const buttonClassName =
 export function AddTodoForm({ onAdd }) {
   const { t } = useI18n()
   const [inputValue, setInputValue] = useState('')
-  const [priority, setPriority] = useState('medium')
+  const [priority, setPriority] = useState('low')
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -43,7 +43,7 @@ export function AddTodoForm({ onAdd }) {
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
       <div className="flex gap-2 items-center">
-        <input
+        <textarea
           type="text"
           className={inputClassName}
           value={inputValue}
