@@ -28,7 +28,7 @@ function TodoFilters({ filter, onFilterChange, searchQuery, onSearchChange }) {
             key={key}
             className={`px-2.5 py-1 rounded-md text-xs border transition-colors ${
               filter === key
-                ? 'bg-[rgba(138,130,173,0.25)] text-[#323232] border-[rgba(138,130,173,0.35)]'
+                ? 'bg-[rgba(138,130,173,0.25)] text-base border-[rgba(138,130,173,0.35)]'
                 : 'bg-transparent text-app-empty border-transparent hover:text-app-todo-text hover:bg-[rgba(138,130,173,0.1)]'
             }`}
             onClick={() => onFilterChange(key)}

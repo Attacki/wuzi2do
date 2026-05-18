@@ -37,7 +37,8 @@ function TodoItem({ todo, onToggle, onRemove, onUpdate }) {
   }
 
   const handleEditKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
       saveEdit()
     } else if (e.key === 'Escape') {
       setEditing(false)
@@ -110,7 +111,7 @@ function TodoItem({ todo, onToggle, onRemove, onUpdate }) {
       ) : (
         <span className="relative grow max-w-[calc(100%-40px)] transition-all duration-300 ease-in-out min-h-[20px] max-h-[20px] hover:max-h-40 overflow-auto hide-scrollbar">
           <span
-            className={`block cursor-pointer text-app-todo-text text-base leading-tight break-words line-clamp-2 group-hover:line-clamp-none ${
+            className={`block cursor-pointer text-app-todo-text text-base leading-tight break-words whitespace-pre-wrap line-clamp-2 group-hover:line-clamp-none ${
               todo.completed ? 'line-through text-app-todo-text-done' : ''
             }`}
             onDoubleClick={handleDoubleClick}
