@@ -63,9 +63,9 @@ function createWindow() {
 
   // 失去焦点时保持置顶，若已吸附则卷回
   mainWindow.on('blur', () => {
-    console.log('blur')
     mainWindow.setAlwaysOnTop(true)
-    if (snapManager.state.isSnapped) {
+    if (snapManager.state.isSnapped || snapManager.state.suppressRollUp) {
+      snapManager.state.suppressRollUp = false
       snapManager.rollUp()
     }
   })

@@ -38,11 +38,10 @@ export function createTrayManager({
    */
   function focusMainWindow() {
     if (mainWindow.isDestroyed()) return
-    if (snapManager.state.isSnapped) {
+    if (snapManager.state.isSnapped && !snapManager.state.isAnimating) {
       snapManager.expand()
     }
-    if (!mainWindow.isVisible()) mainWindow.show()
-    mainWindow.showInactive()
+    mainWindow.show()
     mainWindow.setAlwaysOnTop(true)
     mainWindow.focus()
   }
