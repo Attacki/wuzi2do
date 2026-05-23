@@ -1,7 +1,7 @@
 {
   "name": "wuzi2do",
   "productName": "吾之清单",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An Electron application with React",
   "main": "./out/main/index.js",
   "author": "example.com",

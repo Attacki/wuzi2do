@@ -29,14 +29,14 @@ const buttonClassName =
 export function AddTodoForm({ onAdd }) {
   const { t } = useI18n()
   const [inputValue, setInputValue] = useState('')
-  const [priority, setPriority] = useState('low')
+  const [priority, setPriority] = useState('high')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (inputValue.trim()) {
       onAdd(inputValue.trim(), priority)
       setInputValue('')
-      setPriority('medium')
+      setPriority('high')
     }
   }
 
